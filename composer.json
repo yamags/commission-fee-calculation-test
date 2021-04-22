@@ -1,25 +1,32 @@
 {
-    "name": "paysera/commission-task-skeleton",
-    "description": "Skeleton for Paysera recruitment task",
+    "name": "yama_gs/commission-task-skeleton",
+    "description": "Skeleton for recruitment task",
     "keywords": [],
     "type": "project",
     "autoload": {
         "psr-4": {
-            "Paysera\\CommissionTask\\": "src"
+            "CommissionTask\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Paysera\\CommissionTask\\Tests\\": "tests"
+            "CommissionTask\\Tests\\": "tests"
         }
     },
     "require": {
         "php": ">=7.0",
-        "ext-bcmath": "*"
+        "ext-bcmath": "*",
+        "moneyphp/money": "^3.3",
+        "nesbot/carbon": "^2.46",
+        "symfony/cache": "^5.2",
+        "symfony/config": "^5.2",
+        "symfony/console": "^5.2",
+        "symfony/dotenv": "^5.2",
+        "symfony/filesystem": "^5.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.5",
-        "friendsofphp/php-cs-fixer": "2.16"
+        "friendsofphp/php-cs-fixer": "2.18"
     },
     "config": {
         "sort-packages": true,

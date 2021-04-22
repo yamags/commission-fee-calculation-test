@@ -1,9 +1,23 @@
-# Commission task skeleton
+### Requirements
 
-Following steps:
-- `\CommissionTask\Service\Math` is an example class provided for the skeleton and could or could not be used by your preference;
-- needed scripts could be found inside `composer.json`;
-- before submitting the task make sure that all the scripts pass (`composer run test` in particular);
-- this file should be updated before submitting the task with the documentation on how to run your program.
+PHP 7.0
 
-Good luck! :) 
+### Installation
+
+Install composer dependencies
+
+```
+composer install
+```
+
+### Run script
+
+```
+php index.php app:calculate-commissions data/input.csv
+```
+
+### Run tests
+
+```
+composer run test
+```
