@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Service;
 
+use CommissionTask\App\Configuration;
 use Money\Converter;
 use Money\Currencies\ISOCurrencies;
 use Money\Exchange\FixedExchange;
@@ -15,25 +16,34 @@ class ExchangeRates
 
     public static function getRates()
     {
-        $cache = new FilesystemAdapter();
-        $exchangeRates = $cache->get('exchangeratesapi_cache', function (ItemInterface $item) {
-            $item->expiresAfter(86400);
-            $endpoint   = 'latest';
-            $access_key = '00d941802a232fe9ed120f1ba30493bc';
+        $cache         = new FilesystemAdapter();
+        $exchangeRates = $cache->get(
+            'exchangeratesapi_cache',
+            function (ItemInterface $item) {
+                $item->expiresAfter(86400);
+                $endpoint  = 'latest';
+                $accessKey = Configuration::getInstance()->get('EXCHANGE_RATES_API_KEY');
+                $url       = Configuration::getInstance()->get('EXCHANGE_RATES_API_URL');
 
-            $ch = curl_init('http://api.exchangeratesapi.io/v1/'.$endpoint.'?access_key='.$access_key.'');
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $ch = curl_init($url.$endpoint.'?access_key='.$accessKey.'');
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-            $json = curl_exec($ch);
-            curl_close($ch);
+                $json = curl_exec($ch);
+                curl_close($ch);
 
-            $exchangeRates = json_decode($json, true);
-            return $exchangeRates['rates'];
-        });
+                $exchangeRates = json_decode($json, true);
 
-        $exchange = new ReversedCurrenciesExchange(new FixedExchange([
-            'EUR' => $exchangeRates
-        ]));
+                return $exchangeRates['rates'];
+            }
+        );
+
+        $exchange = new ReversedCurrenciesExchange(
+            new FixedExchange(
+                [
+                    'EUR' => $exchangeRates,
+                ]
+            )
+        );
 
         $converter = new Converter(new ISOCurrencies(), $exchange);
 

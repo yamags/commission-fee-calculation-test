@@ -5,16 +5,17 @@ namespace CommissionTask\App\Rules;
 
 use CommissionTask\App\Transaction;
 use CommissionTask\App\TransactionBasket;
-use CommissionTask\App\TransactionRule;
 use Money\Money;
 
 class WithdrawPrivateMoreXTransactionsPerWeekRule extends WithdrawPrivateRule
 {
+    /** @var int */
     private $numberPerWeek = 0;
 
-    public function __construct($numberPerWeek)
+    public function __construct(int $numberPerWeek, float $commission)
     {
         $this->numberPerWeek = $numberPerWeek;
+        parent::__construct($commission);
     }
 
     public function canApply(TransactionBasket $basket, Transaction $transaction): bool
@@ -24,6 +25,6 @@ class WithdrawPrivateMoreXTransactionsPerWeekRule extends WithdrawPrivateRule
 
     public function calculateFee(TransactionBasket $basket, Transaction $transaction): Money
     {
-        return $transaction->getAmount()->multiply(0.3/100);
+        return $transaction->getAmount()->multiply($this->getCommission());
     }
 }

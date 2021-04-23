@@ -5,10 +5,9 @@ namespace CommissionTask\App\Rules;
 
 use CommissionTask\App\Transaction;
 use CommissionTask\App\TransactionBasket;
-use CommissionTask\App\TransactionRule;
 use Money\Money;
 
-class DepositRule implements TransactionRule
+class DepositRule extends CommissionRule
 {
     const OPERATION_TYPE = 'deposit';
 
@@ -19,6 +18,6 @@ class DepositRule implements TransactionRule
 
     public function calculateFee(TransactionBasket $basket, Transaction $transaction): Money
     {
-        return $transaction->getAmount()->multiply(0.03/100);
+        return $transaction->getAmount()->multiply($this->getCommission());
     }
 }

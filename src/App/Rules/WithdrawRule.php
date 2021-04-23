@@ -5,9 +5,8 @@ namespace CommissionTask\App\Rules;
 
 use CommissionTask\App\Transaction;
 use CommissionTask\App\TransactionBasket;
-use CommissionTask\App\TransactionRule;
 
-abstract class WithdrawRule implements TransactionRule
+abstract class WithdrawRule extends CommissionRule
 {
     const OPERATION_TYPE = 'withdraw';
 

@@ -10,7 +10,7 @@ class DotenvConfigLoader extends FileLoader
 {
     public function load($resource, string $type = null)
     {
-        $dotenv = new Dotenv();
+        $dotenv       = new Dotenv();
         $configValues = $dotenv->parse(file_get_contents($resource));
 
         return $configValues;

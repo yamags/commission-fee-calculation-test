@@ -5,7 +5,6 @@ namespace CommissionTask\App\Rules;
 
 use CommissionTask\App\Transaction;
 use CommissionTask\App\TransactionBasket;
-use CommissionTask\App\TransactionRule;
 use Money\Money;
 
 class WithdrawBusinessRule extends WithdrawRule
@@ -19,6 +18,6 @@ class WithdrawBusinessRule extends WithdrawRule
 
     public function calculateFee(TransactionBasket $basket, Transaction $transaction): Money
     {
-        return $transaction->getAmount()->multiply(0.5/100);
+        return $transaction->getAmount()->multiply($this->getCommission());
     }
 }

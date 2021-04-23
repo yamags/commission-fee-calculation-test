@@ -32,7 +32,6 @@ class Transaction
      */
     private $amount;
 
-
     public function __construct($line)
     {
         $currencies = new ISOCurrencies();
@@ -40,7 +39,7 @@ class Transaction
         $moneyParser = new DecimalMoneyParser($currencies);
 
         $this->date          = Carbon::createFromFormat('Y-m-d', $line[0]);
-        $this->userId        = (int) $line[1];
+        $this->userId        = (int)$line[1];
         $this->userType      = $line[2];
         $this->operationType = $line[3];
         $this->amount        = $moneyParser->parse($line[4], new Currency($line[5]));;

@@ -42,17 +42,17 @@ class CalculateCommissionsCommand extends Command
 
         $file = $input->getArgument('file');
 
-        if(!$this->filesystem->exists($file)) {
+        if ( ! $this->filesystem->exists($file)) {
             $output->writeln("Error! File not found: ".$file);
+
             return Command::FAILURE;
         }
 
-        $csvFile = new CSVFileReaderByLine($file);
-        $commissionsOutput = new CommissionsOutput();
+        $csvFile               = new CSVFileReaderByLine($file);
+        $commissionsOutput     = new CommissionsOutput();
         $transactionsProcessor = new TransactionsProcessor($csvFile, $commissionsOutput);
 
         $transactionsProcessor->process();
-
 
         return Command::SUCCESS;
     }

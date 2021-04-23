@@ -25,23 +25,31 @@ class TransactionBasket
     {
         $sum = new Money(0, new Currency('EUR'));
 
-        if(!isset($this->transactionsByUserAndType[$transaction->getUserId()]) ||
-            !isset($this->transactionsByUserAndType[$transaction->getUserId()][$transaction->getOperationType()])) {
+        if ( ! isset(
+                $this->transactionsByUserAndType[$transaction->getUserId()]
+            ) || ! isset(
+                $this->transactionsByUserAndType[$transaction->getUserId()][$transaction->getOperationType()]
+            )) {
             return $sum;
         }
 
-        foreach ($this->transactionsByUserAndType[$transaction->getUserId()][$transaction->getOperationType()] as $savedTransaction) {
+        foreach ($this->transactionsByUserAndType[$transaction->getUserId()][$transaction->getOperationType(
+        )] as $savedTransaction) {
             /** @var Transaction $savedTransaction */
             $converted = ExchangeRates::getRates()->convert($savedTransaction->getAmount(), $sum->getCurrency());
-            $sum = $sum->add($converted);
+            $sum       = $sum->add($converted);
         }
 
         return $sum;
     }
+
     public function getCount(Transaction $transaction): float
     {
-        if(!isset($this->transactionsByUserAndType[$transaction->getUserId()]) ||
-            !isset($this->transactionsByUserAndType[$transaction->getUserId()][$transaction->getOperationType()])) {
+        if ( ! isset(
+                $this->transactionsByUserAndType[$transaction->getUserId()]
+            ) || ! isset(
+                $this->transactionsByUserAndType[$transaction->getUserId()][$transaction->getOperationType()]
+            )) {
             return 0;
         }
 
