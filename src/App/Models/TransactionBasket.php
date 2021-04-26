@@ -1,8 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
-namespace CommissionTask\App;
+namespace CommissionTask\App\Models;
 
+use CommissionTask\App\Config\Configuration;
 use CommissionTask\Service\ExchangeRates;
 use Money\Currency;
 use Money\Money;
@@ -10,6 +12,12 @@ use Money\Money;
 class TransactionBasket
 {
     protected $transactionsByUserAndType = [];
+    protected $baseCurrency;
+
+    public function __construct()
+    {
+        $this->baseCurrency = Configuration::getInstance()->get('BASE_CURRENCY');
+    }
 
     public function clear(): void
     {
@@ -23,11 +31,11 @@ class TransactionBasket
 
     public function getAmountSum(Transaction $transaction): Money
     {
-        $sum = new Money(0, new Currency('EUR'));
+        $sum = new Money(0, new Currency($this->baseCurrency));
 
-        if ( ! isset(
+        if (!isset(
                 $this->transactionsByUserAndType[$transaction->getUserId()]
-            ) || ! isset(
+            ) || !isset(
                 $this->transactionsByUserAndType[$transaction->getUserId()][$transaction->getOperationType()]
             )) {
             return $sum;
@@ -36,8 +44,11 @@ class TransactionBasket
         foreach ($this->transactionsByUserAndType[$transaction->getUserId()][$transaction->getOperationType(
         )] as $savedTransaction) {
             /** @var Transaction $savedTransaction */
-            $converted = ExchangeRates::getRates()->convert($savedTransaction->getAmount(), $sum->getCurrency());
-            $sum       = $sum->add($converted);
+            $converted = ExchangeRates::getRatesConverter()->convert(
+                $savedTransaction->getAmount(),
+                $sum->getCurrency()
+            );
+            $sum = $sum->add($converted);
         }
 
         return $sum;
@@ -45,9 +56,9 @@ class TransactionBasket
 
     public function getCount(Transaction $transaction): float
     {
-        if ( ! isset(
+        if (!isset(
                 $this->transactionsByUserAndType[$transaction->getUserId()]
-            ) || ! isset(
+            ) || !isset(
                 $this->transactionsByUserAndType[$transaction->getUserId()][$transaction->getOperationType()]
             )) {
             return 0;

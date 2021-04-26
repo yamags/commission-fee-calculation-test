@@ -1,13 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace CommissionTask\Command;
 
-use CommissionTask\App\Configuration;
-use CommissionTask\App\TransactionsProcessor;
-use CommissionTask\Service\CommissionsOutput;
-use CommissionTask\Service\CSVFileReaderByLine;
-use CommissionTask\Service\ExchangeRates;
+use CommissionTask\Service\IOHelpers\CommissionsOutput;
+use CommissionTask\Service\IOHelpers\CSVFileReaderByLine;
+use CommissionTask\Service\TransactionsProcessor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,7 +15,6 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class CalculateCommissionsCommand extends Command
 {
-
     protected static $defaultName = 'app:calculate-commissions';
     /**
      * @var Filesystem
@@ -25,7 +23,6 @@ class CalculateCommissionsCommand extends Command
 
     public function __construct()
     {
-
         $this->filesystem = new Filesystem();
 
         parent::__construct();
@@ -38,18 +35,16 @@ class CalculateCommissionsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        //var_dump(Configuration::getInstance()->get('API_URL'));
-
         $file = $input->getArgument('file');
 
-        if ( ! $this->filesystem->exists($file)) {
-            $output->writeln("Error! File not found: ".$file);
+        if (!$this->filesystem->exists($file)) {
+            $output->writeln('Error! File not found: '.$file);
 
             return Command::FAILURE;
         }
 
-        $csvFile               = new CSVFileReaderByLine($file);
-        $commissionsOutput     = new CommissionsOutput();
+        $csvFile = new CSVFileReaderByLine($file);
+        $commissionsOutput = new CommissionsOutput();
         $transactionsProcessor = new TransactionsProcessor($csvFile, $commissionsOutput);
 
         $transactionsProcessor->process();

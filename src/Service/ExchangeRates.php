@@ -1,9 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace CommissionTask\Service;
 
-use CommissionTask\App\Configuration;
+use CommissionTask\App\Config\Configuration;
 use Money\Converter;
 use Money\Currencies\ISOCurrencies;
 use Money\Exchange\FixedExchange;
@@ -13,17 +14,16 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 class ExchangeRates
 {
-
-    public static function getRates()
+    public static function getRatesConverter()
     {
-        $cache         = new FilesystemAdapter();
+        $cache = new FilesystemAdapter();
         $exchangeRates = $cache->get(
             'exchangeratesapi_cache',
             function (ItemInterface $item) {
                 $item->expiresAfter(86400);
-                $endpoint  = 'latest';
+                $endpoint = 'latest';
                 $accessKey = Configuration::getInstance()->get('EXCHANGE_RATES_API_KEY');
-                $url       = Configuration::getInstance()->get('EXCHANGE_RATES_API_URL');
+                $url = Configuration::getInstance()->get('EXCHANGE_RATES_API_URL');
 
                 $ch = curl_init($url.$endpoint.'?access_key='.$accessKey.'');
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

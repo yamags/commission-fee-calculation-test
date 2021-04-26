@@ -1,6 +1,8 @@
 <?php
 
-namespace CommissionTask\Service;
+declare(strict_types=1);
+
+namespace CommissionTask\Service\IOHelpers;
 
 use Money\Money;
 

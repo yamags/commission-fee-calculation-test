@@ -1,7 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
-namespace CommissionTask\App;
+namespace CommissionTask\App\Config;
 
 class Configuration
 {
@@ -19,12 +20,12 @@ class Configuration
 
     public function __wakeup()
     {
-        throw new \Exception("Cannot unserialize a singleton.");
+        throw new \Exception('Cannot unserialize a singleton.');
     }
 
     public static function getInstance(): Configuration
     {
-        if ( ! isset(self::$instances)) {
+        if (!isset(self::$instances)) {
             self::$instances = new static();
         }
 

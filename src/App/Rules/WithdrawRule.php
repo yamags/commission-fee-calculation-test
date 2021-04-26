@@ -1,10 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace CommissionTask\App\Rules;
 
-use CommissionTask\App\Transaction;
-use CommissionTask\App\TransactionBasket;
+use CommissionTask\App\Models\Transaction;
+use CommissionTask\App\Models\TransactionBasket;
 
 abstract class WithdrawRule extends CommissionRule
 {
@@ -12,6 +13,6 @@ abstract class WithdrawRule extends CommissionRule
 
     public function canApply(TransactionBasket $basket, Transaction $transaction): bool
     {
-        return $transaction->getOperationType() == self::OPERATION_TYPE;
+        return $transaction->getOperationType() === self::OPERATION_TYPE;
     }
 }

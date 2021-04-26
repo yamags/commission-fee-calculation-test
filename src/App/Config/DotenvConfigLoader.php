@@ -1,7 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
-namespace CommissionTask\App;
+namespace CommissionTask\App\Config;
 
 use Symfony\Component\Config\Loader\FileLoader;
 use Symfony\Component\Dotenv\Dotenv;
@@ -10,7 +11,7 @@ class DotenvConfigLoader extends FileLoader
 {
     public function load($resource, string $type = null)
     {
-        $dotenv       = new Dotenv();
+        $dotenv = new Dotenv();
         $configValues = $dotenv->parse(file_get_contents($resource));
 
         return $configValues;

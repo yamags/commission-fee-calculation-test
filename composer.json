@@ -16,8 +16,8 @@
     "require": {
         "php": ">=7.1",
         "ext-bcmath": "*",
-        "ext-curl" : "*",
-        "ext-json" : "*",
+        "ext-curl": "*",
+        "ext-json": "*",
         "moneyphp/money": "^3.3",
         "nesbot/carbon": "^2.46",
         "symfony/cache": "^5.2",

@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
-namespace CommissionTask\Service;
+namespace CommissionTask\Service\IOHelpers;
 
 class CSVFileReaderByLine implements InputByLine
 {
-
     protected $file;
 
     public function __construct($file)
@@ -15,8 +15,8 @@ class CSVFileReaderByLine implements InputByLine
 
     public function getLine(): iterable
     {
-        if (($handle = fopen($this->file, "r")) !== false) {
-            while (($data = fgetcsv($handle, 1000, ",")) !== false) {
+        if (($handle = fopen($this->file, 'r')) !== false) {
+            while (($data = fgetcsv($handle, 1000, ',')) !== false) {
                 yield $data;
             }
             fclose($handle);

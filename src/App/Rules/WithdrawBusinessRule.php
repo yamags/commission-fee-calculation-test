@@ -1,10 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace CommissionTask\App\Rules;
 
-use CommissionTask\App\Transaction;
-use CommissionTask\App\TransactionBasket;
+use CommissionTask\App\Models\Transaction;
+use CommissionTask\App\Models\TransactionBasket;
 use Money\Money;
 
 class WithdrawBusinessRule extends WithdrawRule
@@ -13,7 +14,7 @@ class WithdrawBusinessRule extends WithdrawRule
 
     public function canApply(TransactionBasket $basket, Transaction $transaction): bool
     {
-        return parent::canApply($basket, $transaction) && $transaction->getUserType() == self::USER_TYPE;
+        return parent::canApply($basket, $transaction) && $transaction->getUserType() === self::USER_TYPE;
     }
 
     public function calculateFee(TransactionBasket $basket, Transaction $transaction): Money
