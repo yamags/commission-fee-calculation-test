@@ -1,0 +1,96 @@
+<?php
+
+declare(strict_types=1);
+
+namespace CommissionTask\Tests\Rules;
+
+use Carbon\Carbon;
+use CommissionTask\App\Models\Transaction;
+use CommissionTask\App\Models\TransactionBasket;
+use CommissionTask\App\Rules\DepositRule;
+use Money\Currency;
+use Money\Money;
+use PHPUnit\Framework\TestCase;
+
+class DepositRuleTest extends TestCase
+{
+    /**
+     * @var DepositRule
+     */
+    private $depositRule;
+
+    public function setUp()
+    {
+        $commission        = 0.005;
+        $this->depositRule = new DepositRule($commission);
+    }
+
+    /**
+     * @param int $amount
+     * @param string $userType
+     * @param string $operationType
+     * @param bool $expectation
+     *
+     * @dataProvider dataProviderForCanApply
+     */
+    public function testCanApply(int $amount, string $userType, string $operationType, bool $expectation)
+    {
+        $amount            = new Money($amount, new Currency("EUR"));
+        $transaction       = new Transaction(new Carbon("2021-04-26"), 1, $userType, $operationType, $amount);
+        $transactionBasket = new TransactionBasket("EUR");
+        $transactionBasket->add($transaction);
+        $this->assertEquals(
+            $expectation,
+            $this->depositRule->canApply($transactionBasket, $transaction)
+        );
+    }
+
+    public function dataProviderForCanApply(): array
+    {
+        return [
+            'private withdraw 10 EUR' => [1000, 'private', 'withdraw', false],
+            'private deposit 10 EUR' => [1000, 'private', 'deposit', true],
+            'business withdraw 10 EUR' => [1000, 'business', 'withdraw', false],
+            'business deposit 10 EUR' => [1000, 'business', 'deposit', true],
+            'business deposit 0 EUR' => [0, 'business', 'deposit', true],
+            'business deposit 1000 EUR' => [100000, 'business', 'deposit', true],
+        ];
+    }
+
+    /**
+     * @param int $amount
+     * @param string $userType
+     * @param string $operationType
+     * @param int $amountAfterCommission
+     * @param bool $expectation
+     *
+     * @dataProvider dataProviderForFeeValue
+     */
+    public function testFeeValue(
+        int $amount,
+        string $userType,
+        string $operationType,
+        int $amountAfterCommission,
+        bool $expectation
+    ) {
+        $amount                = new Money($amount, new Currency("EUR"));
+        $amountAfterCommission = new Money($amountAfterCommission, new Currency("EUR"));
+        $transaction           = new Transaction(new Carbon("2021-04-26"), 1, $userType, $operationType, $amount);
+        $transactionBasket     = new TransactionBasket("EUR");
+        $transactionBasket->add($transaction);
+        $this->assertEquals(
+            $expectation,
+            $this->depositRule->calculateFee($transactionBasket, $transaction)->equals($amountAfterCommission)
+        );
+    }
+
+    public function dataProviderForFeeValue(): array
+    {
+        return [
+            'business deposit 0 EUR' => [0, 'business', 'deposit', 0, true],
+            'business deposit 10 EUR' => [1000, 'business', 'deposit', 5, true],
+            'business deposit 1000 EUR' => [100000, 'business', 'deposit', 500, true],
+        ];
+    }
+
+}

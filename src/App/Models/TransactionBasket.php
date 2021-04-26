@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace CommissionTask\App\Models;
 
-use CommissionTask\App\Config\Configuration;
 use CommissionTask\Service\ExchangeRates;
 use Money\Currency;
 use Money\Money;
@@ -14,9 +13,9 @@ class TransactionBasket
     protected $transactionsByUserAndType = [];
     protected $baseCurrency;
 
-    public function __construct()
+    public function __construct(string $baseCurrency)
     {
-        $this->baseCurrency = Configuration::getInstance()->get('BASE_CURRENCY');
+        $this->baseCurrency = $baseCurrency;
     }
 
     public function clear(): void
