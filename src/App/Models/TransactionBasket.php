@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\App\Models;
 
-use CommissionTask\Service\ExchangeRates;
+use Money\Converter;
 use Money\Currency;
 use Money\Money;
 
@@ -13,9 +13,13 @@ class TransactionBasket
     protected $transactionsByUserAndType = [];
     protected $baseCurrency;
 
-    public function __construct(string $baseCurrency)
+    /** @var Converter */
+    protected $converter;
+
+    public function __construct(string $baseCurrency, Converter $converter)
     {
         $this->baseCurrency = $baseCurrency;
+        $this->converter = $converter;
     }
 
     public function clear(): void
@@ -43,7 +47,7 @@ class TransactionBasket
         foreach ($this->transactionsByUserAndType[$transaction->getUserId()][$transaction->getOperationType(
         )] as $savedTransaction) {
             /** @var Transaction $savedTransaction */
-            $converted = ExchangeRates::getRatesConverter()->convert(
+            $converted = $this->converter->convert(
                 $savedTransaction->getAmount(),
                 $sum->getCurrency()
             );
@@ -64,5 +68,10 @@ class TransactionBasket
         }
 
         return count($this->transactionsByUserAndType[$transaction->getUserId()][$transaction->getOperationType()]);
+    }
+
+    public function getConverter(): Converter
+    {
+        return $this->converter;
     }
 }

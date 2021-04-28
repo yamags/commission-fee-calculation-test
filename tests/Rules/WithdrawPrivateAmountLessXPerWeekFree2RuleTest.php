@@ -8,11 +8,12 @@ use Carbon\Carbon;
 use CommissionTask\App\Models\Transaction;
 use CommissionTask\App\Models\TransactionBasket;
 use CommissionTask\App\Rules\WithdrawPrivateAmountGreaterXPerWeekFreeRule;
+use CommissionTask\App\Rules\WithdrawPrivateAmountLessXPerWeekFreeRule;
 use Money\Currency;
 use Money\Money;
 
 
-class WithdrawPrivateAmountGreaterXPerWeekFreeRuleTest extends RuleTest
+class WithdrawPrivateAmountLessXPerWeekFreeRuleTest extends RuleTest
 {
     /**
      * @var WithdrawPrivateAmountGreaterXPerWeekFreeRule
@@ -21,10 +22,9 @@ class WithdrawPrivateAmountGreaterXPerWeekFreeRuleTest extends RuleTest
 
     public function setUp()
     {
-        $commission        = 0.003;
         $amountPerWeek     = 100000;
-        $this->depositRule = new WithdrawPrivateAmountGreaterXPerWeekFreeRule(
-            new Money($amountPerWeek, new Currency("EUR")), $commission
+        $this->depositRule = new WithdrawPrivateAmountLessXPerWeekFreeRule(
+            new Money($amountPerWeek, new Currency("EUR"))
         );
 
         parent::setUp();
@@ -56,19 +56,19 @@ class WithdrawPrivateAmountGreaterXPerWeekFreeRuleTest extends RuleTest
     public function dataProviderForCanApply(): array
     {
         return [
-            'private withdraw 10 EUR' => [[[1000, '2021-04-26', 'EUR', 1, 'private', 'withdraw']], false],
+            'private withdraw 10 EUR' => [[[1000, '2021-04-26', 'EUR', 1, 'private', 'withdraw']], true],
             'private deposit 10 EUR' => [[[1000, '2021-04-26', 'EUR', 1, 'private', 'deposit']], false],
             'business withdraw 10 EUR' => [[[1000, '2021-04-26', 'EUR', 1, 'business', 'withdraw']], false],
             'business deposit 10 EUR' => [[[1000, '2021-04-26', 'EUR', 1, 'business', 'deposit']], false],
-            'private withdraw 0 EUR' => [[[0, '2021-04-26', 'EUR', 1, 'private', 'withdraw']], false],
-            'private withdraw 1000 EUR' => [[[100000, '2021-04-26', 'EUR', 1, 'private', 'withdraw']], false],
-            'private withdraw 1000.01 EUR' => [[[1000001, '2021-04-26', 'EUR', 1, 'private', 'withdraw']], true],
+            'private withdraw 0 EUR' => [[[0, '2021-04-26', 'EUR', 1, 'private', 'withdraw']], true],
+            'private withdraw 1000 EUR' => [[[100000, '2021-04-26', 'EUR', 1, 'private', 'withdraw']], true],
+            'private withdraw 1000.01 EUR' => [[[1000001, '2021-04-26', 'EUR', 1, 'private', 'withdraw']], false],
             'private withdraw 500+600 EUR' => [
                 [
                     [50000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
                     [60000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
                 ],
-                true,
+                false,
             ],
             'private withdraw 300+300+300+300 EUR' => [
                 [
@@ -77,7 +77,7 @@ class WithdrawPrivateAmountGreaterXPerWeekFreeRuleTest extends RuleTest
                     [30000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
                     [30000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
                 ],
-                true,
+                false,
             ],
             'private withdraw 30+30+30 EUR' => [
                 [
@@ -85,7 +85,7 @@ class WithdrawPrivateAmountGreaterXPerWeekFreeRuleTest extends RuleTest
                     [3000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
                     [3000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
                 ],
-                false,
+                true,
             ],
             'private withdraw 300+300+300+300 EUR different person' => [
                 [
@@ -94,10 +94,10 @@ class WithdrawPrivateAmountGreaterXPerWeekFreeRuleTest extends RuleTest
                     [30000, '2021-04-26', 'EUR', 2, 'private', 'withdraw'],
                     [30000, '2021-04-26', 'EUR', 2, 'private', 'withdraw'],
                 ],
-                false,
+                true,
             ],
-            'private withdraw 1000 EUR in JPY' => [[[129530, '2021-04-26', 'JPY', 1, 'private', 'withdraw']], false],
-            'private withdraw 1000.01 EUR in JPY' => [[[129531, '2021-04-26', 'JPY', 1, 'private', 'withdraw']], true],
+            'private withdraw 1000 EUR in JPY' => [[[129530, '2021-04-26', 'JPY', 1, 'private', 'withdraw']], true],
+            'private withdraw 1000.01 EUR in JPY' => [[[129531, '2021-04-26', 'JPY', 1, 'private', 'withdraw']], false],
         ];
     }
 
@@ -133,28 +133,28 @@ class WithdrawPrivateAmountGreaterXPerWeekFreeRuleTest extends RuleTest
     public function dataProviderForFeeValue(): array
     {
         return [
-            'private withdraw 1000.01 EUR' => [[[100001, '2021-04-26', 'EUR', 1, 'private', 'withdraw']], 0, 'EUR', true],
-            'private withdraw 500+600 EUR' => [
+            'private withdraw 1000 EUR' => [[[100000, '2021-04-26', 'EUR', 1, 'private', 'withdraw']], 0, 'EUR', true],
+            'private withdraw 500+100 EUR' => [
                 [
                     [50000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
-                    [60000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
+                    [10000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
                 ],
-                30,
+                0,
                 'EUR',
                 true,
             ],
-            'private withdraw 300+300+300+300 EUR' => [
+            'private withdraw 30+30+30+30 EUR' => [
                 [
-                    [30000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
-                    [30000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
-                    [30000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
-                    [30000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
+                    [3000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
+                    [3000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
+                    [3000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
+                    [3000, '2021-04-26', 'EUR', 1, 'private', 'withdraw'],
                 ],
-                60,
+                0,
                 'EUR',
                 true,
             ],
-            'private withdraw 2000 EUR in JPY' => [[[259060, '2021-04-26', 'JPY', 1, 'private', 'withdraw']], 389, 'JPY',true],
+            'private withdraw 500 EUR in JPY' => [[[64765, '2021-04-26', 'JPY', 1, 'private', 'withdraw']], 0, 'JPY',true],
         ];
     }
 }

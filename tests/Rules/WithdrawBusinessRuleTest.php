@@ -12,7 +12,7 @@ use Money\Currency;
 use Money\Money;
 use PHPUnit\Framework\TestCase;
 
-class WithdrawBusinessRuleTest extends TestCase
+class WithdrawBusinessRuleTest extends RuleTest
 {
     /**
      * @var WithdrawBusinessRule
@@ -23,6 +23,8 @@ class WithdrawBusinessRuleTest extends TestCase
     {
         $commission        = 0.005;
         $this->depositRule = new WithdrawBusinessRule($commission);
+
+        parent::setUp();
     }
 
     /**
@@ -37,7 +39,7 @@ class WithdrawBusinessRuleTest extends TestCase
     {
         $amount            = new Money($amount, new Currency("EUR"));
         $transaction       = new Transaction(new Carbon("2021-04-26"), 1, $userType, $operationType, $amount);
-        $transactionBasket = new TransactionBasket("EUR");
+        $transactionBasket = new TransactionBasket("EUR", $this->converter);
         $transactionBasket->add($transaction);
         $this->assertEquals(
             $expectation,
@@ -76,7 +78,7 @@ class WithdrawBusinessRuleTest extends TestCase
         $amount                = new Money($amount, new Currency("EUR"));
         $amountAfterCommission = new Money($amountAfterCommission, new Currency("EUR"));
         $transaction           = new Transaction(new Carbon("2021-04-26"), 1, $userType, $operationType, $amount);
-        $transactionBasket     = new TransactionBasket("EUR");
+        $transactionBasket     = new TransactionBasket("EUR", $this->converter);
         $transactionBasket->add($transaction);
         $this->assertEquals(
             $expectation,

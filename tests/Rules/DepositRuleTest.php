@@ -12,7 +12,7 @@ use Money\Currency;
 use Money\Money;
 use PHPUnit\Framework\TestCase;
 
-class DepositRuleTest extends TestCase
+class DepositRuleTest extends RuleTest
 {
     /**
      * @var DepositRule
@@ -23,6 +23,7 @@ class DepositRuleTest extends TestCase
     {
         $commission        = 0.005;
         $this->depositRule = new DepositRule($commission);
+        parent::setUp();
     }
 
     /**
@@ -37,7 +38,7 @@ class DepositRuleTest extends TestCase
     {
         $amount            = new Money($amount, new Currency("EUR"));
         $transaction       = new Transaction(new Carbon("2021-04-26"), 1, $userType, $operationType, $amount);
-        $transactionBasket = new TransactionBasket("EUR");
+        $transactionBasket = new TransactionBasket("EUR", $this->converter);
         $transactionBasket->add($transaction);
         $this->assertEquals(
             $expectation,
@@ -76,7 +77,7 @@ class DepositRuleTest extends TestCase
         $amount                = new Money($amount, new Currency("EUR"));
         $amountAfterCommission = new Money($amountAfterCommission, new Currency("EUR"));
         $transaction           = new Transaction(new Carbon("2021-04-26"), 1, $userType, $operationType, $amount);
-        $transactionBasket     = new TransactionBasket("EUR");
+        $transactionBasket     = new TransactionBasket("EUR", $this->converter);
         $transactionBasket->add($transaction);
         $this->assertEquals(
             $expectation,

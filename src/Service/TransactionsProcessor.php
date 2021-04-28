@@ -67,7 +67,7 @@ class TransactionsProcessor
     public function process()
     {
         $firstDayOfProcessedWeek = null;
-        $transactionBasket = new TransactionBasket((string) Configuration::getInstance()->get('BASE_CURRENCY'));
+        $transactionBasket = new TransactionBasket((string) Configuration::getInstance()->get('BASE_CURRENCY'), ExchangeRates::getRatesConverter());
         foreach ($this->input->getLine() as $line) {
             $transaction = TransactionFactory::createFromCSVLine($line);
             if (!(isset($firstDayOfProcessedWeek) && $transaction->getDate()->isSameWeek($firstDayOfProcessedWeek))) {

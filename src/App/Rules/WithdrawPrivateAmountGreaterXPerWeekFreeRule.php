@@ -6,7 +6,6 @@ namespace CommissionTask\App\Rules;
 
 use CommissionTask\App\Models\Transaction;
 use CommissionTask\App\Models\TransactionBasket;
-use CommissionTask\Service\ExchangeRates;
 use Money\Money;
 
 class WithdrawPrivateAmountGreaterXPerWeekFreeRule extends WithdrawPrivateRule
@@ -29,7 +28,7 @@ class WithdrawPrivateAmountGreaterXPerWeekFreeRule extends WithdrawPrivateRule
     public function calculateFee(TransactionBasket $basket, Transaction $transaction): Money
     {
         $delta = $basket->getAmountSum($transaction)->subtract($this->amountPerWeek);
-        $delta = ExchangeRates::getRatesConverter()->convert($delta, $transaction->getAmount()->getCurrency());
+        $delta = $basket->getConverter()->convert($delta, $transaction->getAmount()->getCurrency());
         if ($delta->greaterThan($transaction->getAmount())) {
             $delta = $transaction->getAmount();
         }
