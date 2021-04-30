@@ -50,12 +50,12 @@ class WithdrawBusinessRuleTest extends RuleTest
     public function dataProviderForCanApply(): array
     {
         return [
-            'private withdraw 10 EUR' => [1000, 'private', 'withdraw', false],
-            'private deposit 10 EUR' => [1000, 'private', 'deposit', false],
-            'business withdraw 10 EUR' => [1000, 'business', 'withdraw', true],
-            'business deposit 10 EUR' => [1000, 'business', 'deposit', false],
-            'business withdraw 0 EUR' => [0, 'business', 'withdraw', true],
-            'business withdraw 1000 EUR' => [100000, 'business', 'withdraw', true],
+            'private withdraw 10 EUR' => [1000, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW, false],
+            'private deposit 10 EUR' => [1000, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_DEPOSIT, false],
+            'business withdraw 10 EUR' => [1000, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_WITHDRAW, true],
+            'business deposit 10 EUR' => [1000, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_DEPOSIT, false],
+            'business withdraw 0 EUR' => [0, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_WITHDRAW, true],
+            'business withdraw 1000 EUR' => [100000, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_WITHDRAW, true],
         ];
     }
 
@@ -89,9 +89,9 @@ class WithdrawBusinessRuleTest extends RuleTest
     public function dataProviderForFeeValue(): array
     {
         return [
-            'business withdraw 0 EUR' => [0, 'business', 'withdraw', 0, true],
-            'business withdraw 10 EUR' => [1000, 'business', 'withdraw', 5, true],
-            'business withdraw 1000 EUR' => [100000, 'business', 'withdraw', 500, true],
+            'business withdraw 0 EUR' => [0, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_WITHDRAW, 0, true],
+            'business withdraw 10 EUR' => [1000, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_WITHDRAW, 5, true],
+            'business withdraw 1000 EUR' => [100000, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_WITHDRAW, 500, true],
         ];
     }
 

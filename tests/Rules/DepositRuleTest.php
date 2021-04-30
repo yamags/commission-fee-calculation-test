@@ -49,12 +49,12 @@ class DepositRuleTest extends RuleTest
     public function dataProviderForCanApply(): array
     {
         return [
-            'private withdraw 10 EUR' => [1000, 'private', 'withdraw', false],
-            'private deposit 10 EUR' => [1000, 'private', 'deposit', true],
-            'business withdraw 10 EUR' => [1000, 'business', 'withdraw', false],
-            'business deposit 10 EUR' => [1000, 'business', 'deposit', true],
-            'business deposit 0 EUR' => [0, 'business', 'deposit', true],
-            'business deposit 1000 EUR' => [100000, 'business', 'deposit', true],
+            'private withdraw 10 EUR' => [1000, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW, false],
+            'private deposit 10 EUR' => [1000, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_DEPOSIT, true],
+            'business withdraw 10 EUR' => [1000, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_WITHDRAW, false],
+            'business deposit 10 EUR' => [1000, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_DEPOSIT, true],
+            'business deposit 0 EUR' => [0, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_DEPOSIT, true],
+            'business deposit 1000 EUR' => [100000, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_DEPOSIT, true],
         ];
     }
 
@@ -88,9 +88,9 @@ class DepositRuleTest extends RuleTest
     public function dataProviderForFeeValue(): array
     {
         return [
-            'business deposit 0 EUR' => [0, 'business', 'deposit', 0, true],
-            'business deposit 10 EUR' => [1000, 'business', 'deposit', 5, true],
-            'business deposit 1000 EUR' => [100000, 'business', 'deposit', 500, true],
+            'business deposit 0 EUR' => [0, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_DEPOSIT, 0, true],
+            'business deposit 10 EUR' => [1000, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_DEPOSIT, 5, true],
+            'business deposit 1000 EUR' => [100000, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_DEPOSIT, 500, true],
         ];
     }
 

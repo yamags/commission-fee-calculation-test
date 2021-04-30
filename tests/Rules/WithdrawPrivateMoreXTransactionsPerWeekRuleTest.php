@@ -8,11 +8,12 @@ use Carbon\Carbon;
 use CommissionTask\App\Models\Transaction;
 use CommissionTask\App\Models\TransactionBasket;
 use CommissionTask\App\Rules\WithdrawPrivateAmountGreaterXPerWeekFreeRule;
+use CommissionTask\App\Rules\WithdrawPrivateMoreXTransactionsPerWeekRule;
 use Money\Currency;
 use Money\Money;
 
 
-class WithdrawPrivateAmountGreaterXPerWeekFreeRuleTest extends RuleTest
+class WithdrawPrivateMoreXTransactionsPerWeekRuleTest extends RuleTest
 {
     /**
      * @var WithdrawPrivateAmountGreaterXPerWeekFreeRule
@@ -21,12 +22,7 @@ class WithdrawPrivateAmountGreaterXPerWeekFreeRuleTest extends RuleTest
 
     public function setUp()
     {
-        $commission        = 0.003;
-        $amountPerWeek     = 100000;
-        $this->depositRule = new WithdrawPrivateAmountGreaterXPerWeekFreeRule(
-            new Money($amountPerWeek, new Currency("EUR")), $commission
-        );
-
+        $this->depositRule = new WithdrawPrivateMoreXTransactionsPerWeekRule(3, 0.003);
         parent::setUp();
     }
 
@@ -62,13 +58,14 @@ class WithdrawPrivateAmountGreaterXPerWeekFreeRuleTest extends RuleTest
             'business deposit 10 EUR' => [[[1000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_DEPOSIT]], false],
             'private withdraw 0 EUR' => [[[0, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW]], false],
             'private withdraw 1000 EUR' => [[[100000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW]], false],
-            'private withdraw 1000.01 EUR' => [[[1000001, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW]], true],
-            'private withdraw 500+600 EUR' => [
+            'private withdraw 1000.01 EUR' => [[[1000001, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW]], false],
+            'private withdraw 500+500+500 EUR' => [
                 [
                     [50000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW],
-                    [60000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW],
+                    [50000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW],
+                    [50000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW],
                 ],
-                true,
+                false,
             ],
             'private withdraw 300+300+300+300 EUR' => [
                 [
@@ -78,6 +75,33 @@ class WithdrawPrivateAmountGreaterXPerWeekFreeRuleTest extends RuleTest
                     [30000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW],
                 ],
                 true,
+            ],
+            'private deposit 300+300+300+300 EUR' => [
+                [
+                    [30000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_DEPOSIT],
+                    [30000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_DEPOSIT],
+                    [30000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_DEPOSIT],
+                    [30000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_DEPOSIT],
+                ],
+                false,
+            ],
+            'business deposit 300+300+300+300 EUR' => [
+                [
+                    [30000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_DEPOSIT],
+                    [30000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_DEPOSIT],
+                    [30000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_DEPOSIT],
+                    [30000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_DEPOSIT],
+                ],
+                false,
+            ],
+            'business withdraw 300+300+300+300 EUR' => [
+                [
+                    [30000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_WITHDRAW],
+                    [30000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_WITHDRAW],
+                    [30000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_WITHDRAW],
+                    [30000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_BUSINESS, RuleTest::OPERATION_TYPE_WITHDRAW],
+                ],
+                false,
             ],
             'private withdraw 30+30+30 EUR' => [
                 [
@@ -97,7 +121,7 @@ class WithdrawPrivateAmountGreaterXPerWeekFreeRuleTest extends RuleTest
                 false,
             ],
             'private withdraw 1000 EUR in JPY' => [[[129530, '2021-04-26', 'JPY', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW]], false],
-            'private withdraw 1000.01 EUR in JPY' => [[[129531, '2021-04-26', 'JPY', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW]], true],
+            'private withdraw 1000.01 EUR in JPY' => [[[129531, '2021-04-26', 'JPY', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW]], false],
         ];
     }
 
@@ -133,16 +157,6 @@ class WithdrawPrivateAmountGreaterXPerWeekFreeRuleTest extends RuleTest
     public function dataProviderForFeeValue(): array
     {
         return [
-            'private withdraw 1000.01 EUR' => [[[100001, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW]], 0, 'EUR', true],
-            'private withdraw 500+600 EUR' => [
-                [
-                    [50000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW],
-                    [60000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW],
-                ],
-                30,
-                'EUR',
-                true,
-            ],
             'private withdraw 300+300+300+300 EUR' => [
                 [
                     [30000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW],
@@ -150,11 +164,22 @@ class WithdrawPrivateAmountGreaterXPerWeekFreeRuleTest extends RuleTest
                     [30000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW],
                     [30000, '2021-04-26', 'EUR', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW],
                 ],
-                60,
+                90,
                 'EUR',
                 true,
             ],
-            'private withdraw 2000 EUR in JPY' => [[[259060, '2021-04-26', 'JPY', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW]], 389, 'JPY',true],
+            'private withdraw 300+300+300+500 JPY' => [
+                [
+                    [300, '2021-04-26', 'JPY', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW],
+                    [300, '2021-04-26', 'JPY', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW],
+                    [300, '2021-04-26', 'JPY', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW],
+                    [500, '2021-04-26', 'JPY', 1, RuleTest::USER_TYPE_PRIVATE, RuleTest::OPERATION_TYPE_WITHDRAW],
+                ],
+                2,
+                'JPY',
+                true,
+            ],
         ];
     }
+
 }

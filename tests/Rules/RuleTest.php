@@ -14,6 +14,10 @@ use PHPUnit\Framework\TestCase;
 
 abstract class RuleTest extends TestCase
 {
+    const OPERATION_TYPE_DEPOSIT = 'deposit';
+    const OPERATION_TYPE_WITHDRAW = 'withdraw';
+    const USER_TYPE_PRIVATE = 'private';
+    const USER_TYPE_BUSINESS = 'business';
     /**
      * @var Converter
      */
