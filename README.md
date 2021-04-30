@@ -1,8 +1,11 @@
 ### Requirements
 
-PHP 7.0
+PHP 7.1
 
 ### Installation
+Copy .env.example to .env
+
+set EXCHANGE_RATES_API_KEY value
 
 Install composer dependencies
 
