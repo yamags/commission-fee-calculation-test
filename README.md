@@ -16,7 +16,7 @@ composer install
 ### Run script
 
 ```
-php index.php app:calculate-commissions data/input.csv
+php index.php app:calculate-commissions input-example.csv
 ```
 
 ### Run tests
