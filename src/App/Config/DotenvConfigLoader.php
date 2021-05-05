@@ -7,8 +7,18 @@ namespace CommissionTask\App\Config;
 use Symfony\Component\Config\Loader\FileLoader;
 use Symfony\Component\Dotenv\Dotenv;
 
+/**
+ * Class DotenvConfigLoader.
+ */
 class DotenvConfigLoader extends FileLoader
 {
+    /**
+     * Parse Dot env file.
+     *
+     * @param mixed $resource
+     *
+     * @return array|mixed
+     */
     public function load($resource, string $type = null)
     {
         $dotenv = new Dotenv();
@@ -17,6 +27,13 @@ class DotenvConfigLoader extends FileLoader
         return $configValues;
     }
 
+    /**
+     * Check if file type is supported.
+     *
+     * @param mixed $resource
+     *
+     * @return bool
+     */
     public function supports($resource, string $type = null)
     {
         return is_string($resource) && 'env' === pathinfo(

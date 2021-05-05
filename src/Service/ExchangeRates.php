@@ -12,8 +12,16 @@ use Money\Exchange\ReversedCurrenciesExchange;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
 
+/**
+ * Class ExchangeRates.
+ */
 class ExchangeRates
 {
+    /**
+     * @return Converter
+     *
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
     public static function getRatesConverter()
     {
         $cache = new FilesystemAdapter();

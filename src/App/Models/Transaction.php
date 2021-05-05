@@ -7,6 +7,9 @@ namespace CommissionTask\App\Models;
 use Carbon\Carbon;
 use Money\Money;
 
+/**
+ * Class Transaction.
+ */
 class Transaction
 {
     /**
@@ -30,6 +33,9 @@ class Transaction
      */
     private $amount;
 
+    /**
+     * Transaction constructor.
+     */
     public function __construct(Carbon $date, int $userId, string $userType, string $operationType, Money $amount)
     {
         $this->date = $date;
@@ -44,7 +50,7 @@ class Transaction
         return $this->date;
     }
 
-    public function setDate(Carbon $date)
+    public function setDate(Carbon $date): void
     {
         $this->date = $date;
     }
@@ -54,7 +60,7 @@ class Transaction
         return $this->userId;
     }
 
-    public function setUserId(int $userId)
+    public function setUserId(int $userId): void
     {
         $this->userId = $userId;
     }
@@ -64,7 +70,7 @@ class Transaction
         return $this->userType;
     }
 
-    public function setUserType(string $userType)
+    public function setUserType(string $userType): void
     {
         $this->userType = $userType;
     }
@@ -74,20 +80,17 @@ class Transaction
         return $this->operationType;
     }
 
-    public function setOperationType(string $operationType)
+    public function setOperationType(string $operationType): void
     {
         $this->operationType = $operationType;
     }
 
-    /**
-     * @return float
-     */
     public function getAmount(): Money
     {
         return $this->amount;
     }
 
-    public function setAmount(Money $amount)
+    public function setAmount(Money $amount): void
     {
         $this->amount = $amount;
     }

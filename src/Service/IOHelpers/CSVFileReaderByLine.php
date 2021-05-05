@@ -4,10 +4,18 @@ declare(strict_types=1);
 
 namespace CommissionTask\Service\IOHelpers;
 
+/**
+ * Class CSVFileReaderByLine.
+ */
 class CSVFileReaderByLine implements InputByLine
 {
     protected $file;
 
+    /**
+     * CSVFileReaderByLine constructor.
+     *
+     * @param $file
+     */
     public function __construct($file)
     {
         $this->file = $file;

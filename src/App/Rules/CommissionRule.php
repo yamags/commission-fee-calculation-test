@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace CommissionTask\App\Rules;
 
+/**
+ * Class CommissionRule.
+ */
 abstract class CommissionRule implements TransactionRule
 {
     /** @var float */
     private $commission;
 
+    /**
+     * CommissionRule constructor.
+     */
     public function __construct(float $commission)
     {
         $this->commission = $commission;

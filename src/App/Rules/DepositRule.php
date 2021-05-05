@@ -8,6 +8,9 @@ use CommissionTask\App\Models\Transaction;
 use CommissionTask\App\Models\TransactionBasket;
 use Money\Money;
 
+/**
+ * Class DepositRule.
+ */
 class DepositRule extends CommissionRule
 {
     const OPERATION_TYPE = 'deposit';

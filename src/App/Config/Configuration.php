@@ -4,10 +4,21 @@ declare(strict_types=1);
 
 namespace CommissionTask\App\Config;
 
+/**
+ * Class Configuration.
+ */
 class Configuration
 {
+    /**
+     * Configuration instance.
+     *
+     * @var Configuration|null
+     */
     private static $instances = null;
 
+    /** List of Configuration values.
+     * @var array
+     */
     private static $values = [];
 
     protected function __construct()
@@ -23,6 +34,9 @@ class Configuration
         throw new \Exception('Cannot unserialize a singleton.');
     }
 
+    /**
+     * Get Configuration instance.
+     */
     public static function getInstance(): Configuration
     {
         if (!isset(self::$instances)) {
@@ -32,12 +46,22 @@ class Configuration
         return self::$instances;
     }
 
-    public static function load($values)
+    /**
+     * Initiate Configuration values from array.
+     *
+     * @param $values
+     */
+    public static function load($values): void
     {
         self::$values = $values;
     }
 
-    public static function get($name, $default = null)
+    /**
+     * Get Configuration value by key.
+     *
+     * @param $name
+     */
+    public static function get($name, string $default = null): ?string
     {
         if (isset(self::$values[$name])) {
             return self::$values[$name];

@@ -8,6 +8,9 @@ use CommissionTask\App\Models\Transaction;
 use CommissionTask\App\Models\TransactionBasket;
 use Money\Money;
 
+/**
+ * Interface TransactionRule.
+ */
 interface TransactionRule
 {
     public function canApply(TransactionBasket $basket, Transaction $transaction): bool;

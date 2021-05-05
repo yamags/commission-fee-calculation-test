@@ -12,8 +12,16 @@ use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class Application.
+ */
 class Application extends SymfonyApplication
 {
+    /**
+     * @return int
+     *
+     * @throws \Exception
+     */
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
         $directories = [__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR];

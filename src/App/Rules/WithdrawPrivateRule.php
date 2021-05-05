@@ -7,6 +7,9 @@ namespace CommissionTask\App\Rules;
 use CommissionTask\App\Models\Transaction;
 use CommissionTask\App\Models\TransactionBasket;
 
+/**
+ * Class WithdrawPrivateRule.
+ */
 abstract class WithdrawPrivateRule extends WithdrawRule
 {
     const USER_TYPE = 'private';

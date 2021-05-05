@@ -8,10 +8,19 @@ use CommissionTask\App\Models\Transaction;
 use CommissionTask\App\Models\TransactionBasket;
 use Money\Money;
 
+/**
+ * Class WithdrawPrivateAmountGreaterXPerWeekFreeRule.
+ */
 class WithdrawPrivateAmountGreaterXPerWeekFreeRule extends WithdrawPrivateRule
 {
-    private $amountPerWeek = 0;
+    /**
+     * @var Money
+     */
+    private $amountPerWeek;
 
+    /**
+     * WithdrawPrivateAmountGreaterXPerWeekFreeRule constructor.
+     */
     public function __construct(Money $amountPerWeek, float $commission)
     {
         $this->amountPerWeek = $amountPerWeek;

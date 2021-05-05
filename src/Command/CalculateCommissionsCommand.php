@@ -13,14 +13,24 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * Class CalculateCommissionsCommand.
+ */
 class CalculateCommissionsCommand extends Command
 {
+    /**
+     * @var string
+     */
     protected static $defaultName = 'app:calculate-commissions';
+
     /**
      * @var Filesystem
      */
     protected $filesystem;
 
+    /**
+     * CalculateCommissionsCommand constructor.
+     */
     public function __construct()
     {
         $this->filesystem = new Filesystem();
@@ -33,6 +43,9 @@ class CalculateCommissionsCommand extends Command
         $this->addArgument('file', InputArgument::REQUIRED, 'CSV with transactions');
     }
 
+    /**
+     * @return int
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $file = $input->getArgument('file');

@@ -8,6 +8,9 @@ use CommissionTask\App\Models\Transaction;
 use CommissionTask\App\Models\TransactionBasket;
 use Money\Money;
 
+/**
+ * Class WithdrawBusinessRule.
+ */
 class WithdrawBusinessRule extends WithdrawRule
 {
     const USER_TYPE = 'business';

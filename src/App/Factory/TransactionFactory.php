@@ -10,9 +10,15 @@ use Money\Currencies\ISOCurrencies;
 use Money\Currency;
 use Money\Parser\DecimalMoneyParser;
 
+/**
+ * Class TransactionFactory.
+ */
 class TransactionFactory
 {
-    public static function createFromCSVLine($line)
+    /**
+     * Convert csv line to Transaction model.
+     */
+    public static function createFromCSVLine(array $line): Transaction
     {
         $currencies = new ISOCurrencies();
 

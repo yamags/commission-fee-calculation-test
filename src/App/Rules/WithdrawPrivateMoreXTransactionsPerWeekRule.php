@@ -8,11 +8,17 @@ use CommissionTask\App\Models\Transaction;
 use CommissionTask\App\Models\TransactionBasket;
 use Money\Money;
 
+/**
+ * Class WithdrawPrivateMoreXTransactionsPerWeekRule.
+ */
 class WithdrawPrivateMoreXTransactionsPerWeekRule extends WithdrawPrivateRule
 {
     /** @var int */
     private $numberPerWeek = 0;
 
+    /**
+     * WithdrawPrivateMoreXTransactionsPerWeekRule constructor.
+     */
     public function __construct(int $numberPerWeek, float $commission)
     {
         $this->numberPerWeek = $numberPerWeek;

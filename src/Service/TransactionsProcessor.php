@@ -19,6 +19,9 @@ use CommissionTask\Service\IOHelpers\Output;
 use Money\Currency;
 use Money\Money;
 
+/**
+ * Class TransactionsProcessor.
+ */
 class TransactionsProcessor
 {
     /**
@@ -29,8 +32,16 @@ class TransactionsProcessor
      * @var Output
      */
     protected $output;
+    /**
+     * @var array
+     */
     protected $rules;
 
+    /**
+     * TransactionsProcessor constructor.
+     *
+     * @param Output $outputcomposer
+     */
     public function __construct(InputByLine $input, Output $output)
     {
         $this->input = $input;
