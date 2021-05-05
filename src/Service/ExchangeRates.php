@@ -26,7 +26,7 @@ class ExchangeRates
     {
         $cache = new FilesystemAdapter();
         $exchangeRates = $cache->get(
-            'exchangeratesapi_cache',
+            'exchange_rates_api_cache',
             function (ItemInterface $item) {
                 $item->expiresAfter(86400);
                 $endpoint = 'latest';
@@ -40,6 +40,10 @@ class ExchangeRates
                 curl_close($ch);
 
                 $exchangeRates = json_decode($json, true);
+
+                if (isset($exchangeRates['error'])) {
+                    throw new \Exception('ExchangeRatesAPI Error: '.$exchangeRates['error']['code']);
+                }
 
                 return $exchangeRates['rates'];
             }
